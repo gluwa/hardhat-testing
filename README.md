@@ -30,6 +30,13 @@ Compile the smart contracts with Hardhat:
 $ yarn compile
 ```
 
+### Run local node
+
+Run local node at localhost:8545
+```sh
+$ yarn run-node
+```
+
 ### Test
 
 Run the Mocha tests:
