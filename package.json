@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "compile": "npx hardhat compile",
-    "test": "npx hardhat test"
+    "build": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "run-node": "npx hardhat node",
+    "deploy": "npx hardhat run --network localhost scripts/deploy.ts"
   },
   "author": "",
   "license": "MIT",
