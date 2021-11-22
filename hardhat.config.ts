@@ -61,6 +61,10 @@ const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {
+      mining: {
+        auto: false,
+        interval: 5000
+      },
       accounts: {
         mnemonic: MNEMONIC,
       },
