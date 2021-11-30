@@ -1,6 +1,4 @@
 #!/bin/bash
-
-yarn run-node &
-yarn deploy
-
-exec "$@"
+yarn run-node& 
+yarn run deploy
+tail -f /dev/null

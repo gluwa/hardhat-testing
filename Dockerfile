@@ -17,5 +17,4 @@ EXPOSE 8545
 RUN yarn install
 RUN yarn compile
 
-ENTRYPOINT [ "/usr/src/app/entrypoint.sh" ]
-CMD ["/bin/bash"]
+CMD ["/bin/sh", "/usr/src/app/entrypoint.sh"]
