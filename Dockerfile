@@ -10,10 +10,12 @@ COPY package*.json ./
 
 # Bundle app source
 COPY . .
+RUN chmod +x /usr/src/app/entrypoint.sh
 
 EXPOSE 8545
 
 RUN yarn install
 RUN yarn compile
 
-ENTRYPOINT [ "yarn", "run-node" ]
+ENTRYPOINT [ "/usr/src/app/entrypoint.sh" ]
+CMD ["/bin/bash"]
