@@ -14,9 +14,14 @@ async function main(): Promise<void> {
   const TestTokenFactory: ContractFactory = await ethers.getContractFactory(
     'TestToken',
   );
+
   const testToken: Contract = await TestTokenFactory.deploy();
   await testToken.deployed();
   console.log('TestToken deployed to: ', testToken.address);
+
+  
+  await testToken.grantRole(ethers.utils.id("MINTER_ROLE"), "0x4e90a36b45879f5bae71b57ad525e817afa54890");
+  await testToken.grantRole(ethers.utils.id("MINTER_ROLE"), "0xb6a8490101a0521677b66866b8052ee9f9975c17");
 }
 
 // We recommend this pattern to be able to use async/await everywhere
