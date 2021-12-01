@@ -19,4 +19,8 @@ contract TestToken is ERC20, AccessControl {
         require(hasRole(MINTER_ROLE, msg.sender), "Only minter can mint");
         _mint(to, amount);
     }
+
+    function burn(uint256 amount) external {
+        _burn(msg.sender, amount);
+    }
 }
