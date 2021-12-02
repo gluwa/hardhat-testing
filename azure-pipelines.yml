@@ -10,10 +10,15 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- script: docker build . -t gluwa/hardhat-dev:latest
+  displayName: 'Build image'
+
+
 
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    docker pull -a gluwa/hardhat-dev
+    export version = $(docker images --format "{{.Tag}}" gluwa/hardhat-dev | grep '\d.*' | sort -r | head -n 1)
+    docker login -u $(userName) -p $(pass)
+    docker tag gluwa/hardhat-dev:latest gluwa/hardhat-dev:$version
+    docker push gluwa/hardhat-dev:latest && docker push gluwa/hardhat-dev:$version
+  displayName: 'tag and push docker images'
