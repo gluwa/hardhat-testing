@@ -9,6 +9,8 @@ trigger:
     include:
     - refs/tags/*
 
+pr: none
+
 pool:
   vmImage: ubuntu-latest
 
