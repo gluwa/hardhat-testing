@@ -30,5 +30,5 @@ steps:
     command: buildAndPush
     repository: gluwa/hardhat-dev
     tags: |
-      $tag
+      $($tag)
       latest
