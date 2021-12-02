@@ -16,6 +16,7 @@ steps:
 - script: |
     export tag=$(git describe --tag)
     echo "Tag is: $tag"
+    echo "##vso[task.setvariable variable=gitTag;]$tag" 
   displayName: 'get version tag'
 
 #- task: Docker@2
@@ -30,5 +31,5 @@ steps:
     command: buildAndPush
     repository: gluwa/hardhat-dev
     tags: |
-      $($tag)
+      $(gitTag)
       latest
