@@ -4,21 +4,30 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
+  batch: true
+  branches: 
+    include:
+    - refs/tags/*
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: docker build . -t gluwa/hardhat-dev:latest
-  displayName: 'Build image'
-
-
-
 - script: |
-    docker pull -a gluwa/hardhat-dev
-    export version = $(docker images --format "{{.Tag}}" gluwa/hardhat-dev | grep '\d.*' | sort -r | head -n 1)
-    docker login -u $(userName) -p $(pass)
-    docker tag gluwa/hardhat-dev:latest gluwa/hardhat-dev:$version
-    docker push gluwa/hardhat-dev:latest && docker push gluwa/hardhat-dev:$version
-  displayName: 'tag and push docker images'
+    export $tag = $(git describe --tag)
+    echo "Tag is: $(tag)"
+  displayName: 'get version tag'
+
+- task: Docker@2
+  displayName: Login to gluwa
+  inputs:
+    command: login
+
+- task: Docker@2
+  displayName: Build and Push
+  inputs:
+    command: buildAndPush
+    repository: gluwa/hardhat-dev
+    tags: |
+      $(tag)
+      latest
