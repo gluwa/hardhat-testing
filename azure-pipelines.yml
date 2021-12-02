@@ -23,7 +23,7 @@ steps:
   displayName: Login to gluwa
   inputs:
     command: login
-    containerRegistry: gluwa
+    containerRegistry: tmcdonaldService
 
 - task: Docker@2
   displayName: Build and Push
