@@ -29,8 +29,8 @@ abstract contract ETHlessTransfer is Context, ERC20 {
      * - the `sender` must have a balance of at least the sum of `amount` and `fee`.
      * - the `nonce` is only used once per `sender`.
      */
-    function _transfer(address sender, address recipient, uint256 amount, uint256 fee, uint256 nonce, bytes memory sig)
-    internal returns (bool success) {
+    function transfer(address sender, address recipient, uint256 amount, uint256 fee, uint256 nonce, bytes memory sig)
+    public returns (bool success) {
         _useNonce(sender, nonce);
         uint256 chainId;
         assembly {
