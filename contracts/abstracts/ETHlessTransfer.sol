@@ -58,7 +58,7 @@ abstract contract ETHlessTransfer is Context, ERC20 {
 
         return (hash,signer);
     }
-    function chainID()public view returns(uint256){
+    function chainID()public pure returns(uint256){
         uint256 chainId;
         assembly {
             chainId := chainid()

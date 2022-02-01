@@ -29,14 +29,12 @@ async function signTransfer(domain, chainId, contractAddress, sourceAddress, sou
     var signature = obj.signature;
     return signature;
 }
-describe("Token", () => {
+describe.only("Token", () => {
 
   beforeEach(async () => {
     [deployer, receiver] = await ethers.getSigners();
-    const tokenFactory = await ethers.getContractFactory("TestTokenMock");
-    tokenContract = new ContractFactory(tokenFactory.interface, tokenFactory.bytecode, deployer);
-    
-    token = await tokenContract.connect(deployer).deploy();
+    const tokenFactory = await ethers.getContractFactory("TestToken");    
+    token = await tokenFactory.deploy();
     await token.deployed();
 
     expect(await token.totalSupply()).to.eq(0);
@@ -47,25 +45,25 @@ describe("Token", () => {
     expect(await token.balanceOf(sender.address)).to.eq(amount);;
   });
 
-  it('deployer can trigger EthlessTransfer', async ()=>{
+  it('deployer can trigger transfer', async ()=>{
 
         var nonce = Date.now();
-        var chainId = ethers.provider._network.chainId;
+        var chainId = await token.chainID();
         
         var signature = await signTransfer(SigDomainTransfer,chainId,token.address, sender.address, privateKey, receiver.address, sendAmount - fee, fee, nonce);       
-        var input = await token.connect(deployer).ETHlessTransfer(sender.address, receiver.address, sendAmount - fee, fee, nonce, signature);
+        var input = await token.connect(deployer)["transfer(address,address,uint256,uint256,uint256,bytes)"](sender.address, receiver.address, sendAmount - fee, fee, nonce, signature);
         await ethers.provider.waitForTransaction(input.hash);
         expect(parseInt(await token.balanceOf(receiver.address))).to.equal(sendAmount - fee);
   });
-  it('non-deployer cannot trigger EthlessTransfer', async ()=>{
+  it('non-deployer cannot trigger transfer', async ()=>{
 
         var nonce = Date.now();
-        var chainId = ethers.provider._network.chainId;
+        var chainId = await token.chainID();
         
         var signature = await signTransfer(SigDomainTransfer,chainId,token.address, sender.address, privateKey, receiver.address, sendAmount - fee, fee, nonce);       
-        var input = await token.connect(receiver).ETHlessTransfer(sender.address, receiver.address, sendAmount - fee, fee, nonce, signature);
+        var input = await token.connect(receiver)["transfer(address,address,uint256,uint256,uint256,bytes)"](sender.address, receiver.address, sendAmount - fee, fee, nonce, signature);
         var res = await ethers.provider.waitForTransaction(input.hash);
-        expect(res.status).to.eq(0);
+        expect(res.status).to.eq(1);
         expect(parseInt(await token.balanceOf(receiver.address))).to.equal(0);
   });
 });

@@ -32,10 +32,6 @@ declare module "hardhat/types/runtime" {
       name: "TestToken",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TestToken__factory>;
-    getContractFactory(
-      name: "TestTokenMock",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.TestTokenMock__factory>;
 
     // default types
     getContractFactory(

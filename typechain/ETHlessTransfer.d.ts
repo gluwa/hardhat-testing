@@ -32,7 +32,7 @@ interface ETHlessTransferInterface extends ethers.utils.Interface {
     "name()": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
-    "transfer(address,uint256)": FunctionFragment;
+    "transfer(address,address,uint256,uint256,uint256,bytes)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
   };
 
@@ -74,7 +74,14 @@ interface ETHlessTransferInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "transfer",
-    values: [string, BigNumberish]
+    values: [
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "transferFrom",
@@ -206,7 +213,17 @@ export class ETHlessTransfer extends BaseContract {
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    transfer(
+    "transfer(address,address,uint256,uint256,uint256,bytes)"(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "transfer(address,uint256)"(
       recipient: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -266,7 +283,17 @@ export class ETHlessTransfer extends BaseContract {
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-  transfer(
+  "transfer(address,address,uint256,uint256,uint256,bytes)"(
+    sender: string,
+    recipient: string,
+    amount: BigNumberish,
+    fee: BigNumberish,
+    nonce: BigNumberish,
+    sig: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "transfer(address,uint256)"(
     recipient: string,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -326,7 +353,17 @@ export class ETHlessTransfer extends BaseContract {
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transfer(
+    "transfer(address,address,uint256,uint256,uint256,bytes)"(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "transfer(address,uint256)"(
       recipient: string,
       amount: BigNumberish,
       overrides?: CallOverrides
@@ -407,7 +444,17 @@ export class ETHlessTransfer extends BaseContract {
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transfer(
+    "transfer(address,address,uint256,uint256,uint256,bytes)"(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "transfer(address,uint256)"(
       recipient: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -471,7 +518,17 @@ export class ETHlessTransfer extends BaseContract {
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    transfer(
+    "transfer(address,address,uint256,uint256,uint256,bytes)"(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "transfer(address,uint256)"(
       recipient: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }

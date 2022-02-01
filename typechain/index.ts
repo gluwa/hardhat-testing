@@ -6,11 +6,9 @@ export type { ERC20 } from "./ERC20";
 export type { IERC20 } from "./IERC20";
 export type { ETHlessTransfer } from "./ETHlessTransfer";
 export type { TestToken } from "./TestToken";
-export type { TestTokenMock } from "./TestTokenMock";
 
 export { AccessControl__factory } from "./factories/AccessControl__factory";
 export { ERC20__factory } from "./factories/ERC20__factory";
 export { IERC20__factory } from "./factories/IERC20__factory";
 export { ETHlessTransfer__factory } from "./factories/ETHlessTransfer__factory";
 export { TestToken__factory } from "./factories/TestToken__factory";
-export { TestTokenMock__factory } from "./factories/TestTokenMock__factory";

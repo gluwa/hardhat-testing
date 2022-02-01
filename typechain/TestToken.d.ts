@@ -27,6 +27,8 @@ interface TestTokenInterface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
+    "chainID()": FunctionFragment;
+    "checkSig(address,address,uint256,uint256,uint256,bytes)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
@@ -41,7 +43,7 @@ interface TestTokenInterface extends ethers.utils.Interface {
     "revokeRole(bytes32,address)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
-    "transfer(address,uint256)": FunctionFragment;
+    "transfer(address,address,uint256,uint256,uint256,bytes)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
   };
 
@@ -63,6 +65,18 @@ interface TestTokenInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "chainID", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "checkSig",
+    values: [
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike
+    ]
+  ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "decreaseAllowance",
@@ -112,7 +126,14 @@ interface TestTokenInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "transfer",
-    values: [string, BigNumberish]
+    values: [
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "transferFrom",
@@ -131,6 +152,8 @@ interface TestTokenInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "chainID", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "checkSig", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
@@ -254,6 +277,18 @@ export class TestToken extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    chainID(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    checkSig(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string, string]>;
+
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
     decreaseAllowance(
@@ -317,7 +352,17 @@ export class TestToken extends BaseContract {
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    transfer(
+    "transfer(address,address,uint256,uint256,uint256,bytes)"(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "transfer(address,uint256)"(
       recipient: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -353,6 +398,18 @@ export class TestToken extends BaseContract {
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  chainID(overrides?: CallOverrides): Promise<BigNumber>;
+
+  checkSig(
+    sender: string,
+    recipient: string,
+    amount: BigNumberish,
+    fee: BigNumberish,
+    nonce: BigNumberish,
+    sig: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<[string, string]>;
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
@@ -417,7 +474,17 @@ export class TestToken extends BaseContract {
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-  transfer(
+  "transfer(address,address,uint256,uint256,uint256,bytes)"(
+    sender: string,
+    recipient: string,
+    amount: BigNumberish,
+    fee: BigNumberish,
+    nonce: BigNumberish,
+    sig: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "transfer(address,uint256)"(
     recipient: string,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -450,6 +517,18 @@ export class TestToken extends BaseContract {
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     burn(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    chainID(overrides?: CallOverrides): Promise<BigNumber>;
+
+    checkSig(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string, string]>;
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
@@ -514,7 +593,17 @@ export class TestToken extends BaseContract {
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transfer(
+    "transfer(address,address,uint256,uint256,uint256,bytes)"(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    "transfer(address,uint256)"(
       recipient: string,
       amount: BigNumberish,
       overrides?: CallOverrides
@@ -599,6 +688,18 @@ export class TestToken extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    chainID(overrides?: CallOverrides): Promise<BigNumber>;
+
+    checkSig(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
     decreaseAllowance(
@@ -665,7 +766,17 @@ export class TestToken extends BaseContract {
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transfer(
+    "transfer(address,address,uint256,uint256,uint256,bytes)"(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "transfer(address,uint256)"(
       recipient: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -706,6 +817,18 @@ export class TestToken extends BaseContract {
     burn(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    chainID(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    checkSig(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -774,7 +897,17 @@ export class TestToken extends BaseContract {
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    transfer(
+    "transfer(address,address,uint256,uint256,uint256,bytes)"(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "transfer(address,uint256)"(
       recipient: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
