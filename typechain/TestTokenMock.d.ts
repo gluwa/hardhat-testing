@@ -19,14 +19,18 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface TestTokenInterface extends ethers.utils.Interface {
+interface TestTokenMockInterface extends ethers.utils.Interface {
   functions: {
+    "ADMIN_ROLE()": FunctionFragment;
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
+    "ETHlessTransfer(address,address,uint256,uint256,uint256,bytes)": FunctionFragment;
     "MINTER_ROLE()": FunctionFragment;
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
+    "chainID()": FunctionFragment;
+    "checkSig(address,address,uint256,uint256,uint256,bytes)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
@@ -46,8 +50,23 @@ interface TestTokenInterface extends ethers.utils.Interface {
   };
 
   encodeFunctionData(
+    functionFragment: "ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "DEFAULT_ADMIN_ROLE",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "ETHlessTransfer",
+    values: [
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "MINTER_ROLE",
@@ -63,6 +82,18 @@ interface TestTokenInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "chainID", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "checkSig",
+    values: [
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike
+    ]
+  ): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "decreaseAllowance",
@@ -119,8 +150,13 @@ interface TestTokenInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
 
+  decodeFunctionResult(functionFragment: "ADMIN_ROLE", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "DEFAULT_ADMIN_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "ETHlessTransfer",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -131,6 +167,8 @@ interface TestTokenInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "chainID", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "checkSig", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decreaseAllowance",
@@ -187,7 +225,7 @@ interface TestTokenInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
-export class TestToken extends BaseContract {
+export class TestTokenMock extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -228,10 +266,22 @@ export class TestToken extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: TestTokenInterface;
+  interface: TestTokenMockInterface;
 
   functions: {
+    ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
+    ETHlessTransfer(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     MINTER_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
@@ -253,6 +303,18 @@ export class TestToken extends BaseContract {
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    chainID(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    checkSig(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string, string]>;
 
     decimals(overrides?: CallOverrides): Promise<[number]>;
 
@@ -331,7 +393,19 @@ export class TestToken extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
   DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  ETHlessTransfer(
+    sender: string,
+    recipient: string,
+    amount: BigNumberish,
+    fee: BigNumberish,
+    nonce: BigNumberish,
+    sig: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   MINTER_ROLE(overrides?: CallOverrides): Promise<string>;
 
@@ -353,6 +427,18 @@ export class TestToken extends BaseContract {
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  chainID(overrides?: CallOverrides): Promise<BigNumber>;
+
+  checkSig(
+    sender: string,
+    recipient: string,
+    amount: BigNumberish,
+    fee: BigNumberish,
+    nonce: BigNumberish,
+    sig: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<[string, string]>;
 
   decimals(overrides?: CallOverrides): Promise<number>;
 
@@ -431,7 +517,19 @@ export class TestToken extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    ETHlessTransfer(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     MINTER_ROLE(overrides?: CallOverrides): Promise<string>;
 
@@ -450,6 +548,18 @@ export class TestToken extends BaseContract {
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     burn(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    chainID(overrides?: CallOverrides): Promise<BigNumber>;
+
+    checkSig(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string, string]>;
 
     decimals(overrides?: CallOverrides): Promise<number>;
 
@@ -576,7 +686,19 @@ export class TestToken extends BaseContract {
   };
 
   estimateGas: {
+    ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    ETHlessTransfer(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     MINTER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -597,6 +719,18 @@ export class TestToken extends BaseContract {
     burn(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    chainID(overrides?: CallOverrides): Promise<BigNumber>;
+
+    checkSig(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
@@ -680,8 +814,20 @@ export class TestToken extends BaseContract {
   };
 
   populateTransaction: {
+    ADMIN_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     DEFAULT_ADMIN_ROLE(
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    ETHlessTransfer(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     MINTER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -706,6 +852,18 @@ export class TestToken extends BaseContract {
     burn(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    chainID(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    checkSig(
+      sender: string,
+      recipient: string,
+      amount: BigNumberish,
+      fee: BigNumberish,
+      nonce: BigNumberish,
+      sig: BytesLike,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
