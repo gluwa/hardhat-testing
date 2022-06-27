@@ -19,6 +19,15 @@ async function main(): Promise<void> {
   await testToken.deployed();
   console.log('TestToken deployed to: ', testToken.address);
 
+  // Deploy CreditCoin contract
+  const CreditcoinFactory: ContractFactory = await ethers.getContractFactory(
+    'CreditCoin',
+  );
+
+  const ctcToken: Contract = await CreditcoinFactory.deploy();
+  await ctcToken.deployed();
+  console.log('CTC deployed to: ', ctcToken.address);
+
   
   await testToken.grantRole(ethers.utils.id("MINTER_ROLE"), "0x4e90a36b45879f5bae71b57ad525e817afa54890");
   await testToken.grantRole(ethers.utils.id("MINTER_ROLE"), "0xb6a8490101a0521677b66866b8052ee9f9975c17");
